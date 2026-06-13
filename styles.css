@@ -1,8 +1,12 @@
-/*
+.lsp-rule-card {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+	padding: 8px 12px;
+	margin-bottom: 10px;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
+.lsp-criteria {
+	padding-left: 12px;
+	border-left: 2px solid var(--background-modifier-border);
+	margin-top: 4px;
+}

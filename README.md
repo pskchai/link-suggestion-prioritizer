@@ -1,92 +1,116 @@
-# Obsidian Sample Plugin
+# Link Suggestion Prioritizer
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+An Obsidian plugin that reorders the `[[...]]` wikilink autocomplete suggestions based on configurable rules — no change to Obsidian's fuzzy scoring, just reordering.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
+- **Three-band ordering**: matched notes move to the top (prioritize) or bottom (deprioritize) of the list; everything else stays in Obsidian's default order.
+- **Rule-based matching**: each rule combines one or more criteria with AND logic. A note is placed in the band of the first rule it matches (top rule = highest priority).
+- **Three criterion types**:
+  - **Path** — glob pattern matched against the note's vault path (e.g. `Projects/**`, `Daily/*`, `*.md`).
+  - **Tag** — glob pattern matched against any tag on the note (frontmatter + inline, including parent tags of nested tags; e.g. `project`, `project/**`).
+  - **Property** — frontmatter key check: *exists*, *equals* a value, or *contains* a value (array membership or substring).
+- **Live settings**: changes take effect immediately — no Obsidian reload needed.
+- **100% local and offline**: no network requests, no telemetry, no cloud services.
 
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and outputs a Notice on click.
-- Registers a global interval which logs 'setInterval' to the console.
+## Installation
 
-## First time developing plugins?
+### Manual
 
-Quick starting guide for new plugin devs:
+1. Build the plugin (`npm run build`) or download a release.
+2. Copy `main.js`, `manifest.json`, and `styles.css` to `<Vault>/.obsidian/plugins/link-suggestion-prioritizer/`.
+3. Reload Obsidian and enable the plugin under **Settings → Community plugins**.
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `src/main.ts` to `main.js`.
-- Make changes to `src/main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+### From the community plugin list
 
-## Releasing new releases
+Search for **Link Suggestion Prioritizer** in **Settings → Community plugins → Browse**.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Configuration
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+Open **Settings → Link Suggestion Prioritizer**.
 
-## Adding your plugin to the community plugin list
+### Enable reordering
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+Master toggle. When off, the plugin passes all suggestions through unmodified.
 
-## How to use
+### Rules
 
-- Clone this repo.
-- Make sure your NodeJS is at least v18 (`node --version`).
-- `npm i` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+Rules are listed top-to-bottom. The first rule a note matches determines its band.
 
-## Manually installing the plugin
+Each rule card contains:
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+| Field | Description |
+|---|---|
+| Enable toggle | Temporarily disable a rule without deleting it. |
+| Name | Optional label for your own reference. |
+| Direction | **Prioritize** (move to top) or **Deprioritize** (move to bottom). |
+| ↑ / ↓ buttons | Reorder rules. Higher = higher priority. |
+| 🗑 button | Delete the rule. |
 
-## Improve code quality with eslint
+Use the **Add criterion** button inside a rule to add criteria (combined with AND). Each criterion has a type:
 
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code.
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
+- **Path** — enter a glob pattern to match the note's vault path.
+  - `Projects/**` — any note inside the Projects folder.
+  - `Daily/*` — direct children only (not sub-folders).
+  - `**/*.md` — all markdown files.
+- **Tag** — enter a glob pattern matched against the note's tags (without leading `#`).
+  - `project` — exact match.
+  - `project/**` — any sub-tag of project (e.g. `project/active`).
+  - Patterns are case-insensitive.
+- **Property** — enter a frontmatter key and select a mode:
+  - *Exists* — the key is present and non-null.
+  - *Equals* — the value equals the given string (numbers are coerced to string).
+  - *Contains* — the value is an array that includes the given item, or a string that contains the given substring.
 
-## Funding URL
+### Ordering semantics
 
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-	"fundingUrl": "https://buymeacoffee.com"
-}
+```
+[Rule 1 prioritized] [Rule 2 prioritized] … [Unmatched, original order] … [Rule 2 deprioritized] [Rule 1 deprioritized]
 ```
 
-If you have multiple URLs, you can also do:
+Within each group, notes keep Obsidian's original relative order (stable sort). Notes that match no rule are unaffected.
 
-```json
-{
-	"fundingUrl": {
-		"Buy Me a Coffee": "https://buymeacoffee.com",
-		"GitHub Sponsor": "https://github.com/sponsors",
-		"Patreon": "https://www.patreon.com/"
-	}
-}
+## Glob pattern reference
+
+| Pattern | Matches |
+|---|---|
+| `**` | Any path (including slashes) |
+| `*` | Any string without a slash |
+| `?` | Any single character without a slash |
+| `.` | A literal dot |
+| All other characters | Literal match |
+
+Patterns are anchored (full-string match) and case-insensitive.
+
+## Privacy
+
+This plugin operates entirely within your local vault. It does not make any network requests, collect any data, or transmit anything to any service.
+
+## Development
+
+```bash
+npm install       # install dependencies
+npm run dev       # watch mode (outputs main.js)
+npm run build     # production build
+npm test          # unit tests (Vitest)
+npm run lint      # ESLint
 ```
 
-## API Documentation
+### Manual testing in a vault
 
-See https://docs.obsidian.md
+```bash
+cp main.js manifest.json styles.css <Vault>/.obsidian/plugins/link-suggestion-prioritizer/
+```
+
+Reload Obsidian, enable the plugin, open **Settings → Link Suggestion Prioritizer**, create a rule, and type `[[` in a note.
+
+## Releasing
+
+1. Bump `version` in `manifest.json` and `package.json`.
+2. Add the new version → minAppVersion mapping to `versions.json`.
+3. Create a GitHub release tagged with the exact version number (no leading `v`).
+4. Attach `main.js`, `manifest.json`, and `styles.css` as release assets.
+
+## License
+
+MIT

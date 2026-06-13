@@ -1,11 +1,9 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
-	"minAppVersion": "1.0.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"id": "link-suggestion-prioritizer",
+	"name": "Link Suggestion Prioritizer",
+	"version": "0.1.0",
+	"minAppVersion": "1.4.0",
+	"description": "An Obsidian plugin to prioritize/deprioritize suggested notes by folders, tags, and properties.",
+	"author": "pskchai",
 	"isDesktopOnly": false
 }
