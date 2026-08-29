@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { describe, it, expect } from 'vitest';
 import { TFile } from 'obsidian';     // resolves to the stub via vitest.config alias
-import { findLinkSuggest, toMeta } from '../suggest/patch';
+import { findLinkSuggest, toMeta } from '../patch';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -62,18 +62,13 @@ describe('toMeta', () => {
 		expect(meta).not.toBeNull();
 		expect(meta!.path).toBe('Projects/note.md');
 		expect(meta!.tags).toEqual([]);
-		expect(meta!.frontmatter).toEqual({});
 	});
 
 	it('returns FileMeta with tags from cache', () => {
 		const file = Object.assign(new TFile(), { path: 'note.md' });
-		const cache = {
-			tags: [{ tag: '#project' }, { tag: '#active' }],
-			frontmatter: { status: 'active' },
-		};
+		const cache = { tags: [{ tag: '#project' }, { tag: '#active' }] };
 		const meta = toMeta({ file }, makeApp([], cache));
 		expect(meta!.tags).toEqual(['#project', '#active']);
-		expect(meta!.frontmatter).toEqual({ status: 'active' });
 	});
 });
 

@@ -14,3 +14,5 @@ export class App {}
 export class Plugin {}
 export class PluginSettingTab {}
 export class Setting {}
+export class AbstractInputSuggest {}
+export class TFolder {}

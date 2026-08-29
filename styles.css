@@ -1,12 +1,7 @@
-.lsp-rule-card {
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 6px;
-	padding: 8px 12px;
-	margin-bottom: 10px;
+.lsp-entry .setting-item-description:empty {
+	display: none;
 }
 
-.lsp-criteria {
-	padding-left: 12px;
-	border-left: 2px solid var(--background-modifier-border);
-	margin-top: 4px;
+.lsp-warning .setting-item-description {
+	color: var(--text-warning);
 }

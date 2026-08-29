@@ -1,9 +1,9 @@
 {
 	"id": "link-suggestion-prioritizer",
 	"name": "Link Suggestion Prioritizer",
-	"version": "0.1.0",
-	"minAppVersion": "1.4.0",
-	"description": "An Obsidian plugin to prioritize/deprioritize suggested notes by folders, tags, and properties.",
+	"version": "0.2.0",
+	"minAppVersion": "1.6.6",
+	"description": "Reorder [[wikilink]] suggestions by folder and tag.",
 	"author": "pskchai",
 	"isDesktopOnly": false
 }

@@ -1,7 +1,7 @@
 {
 	"name": "link-suggestion-prioritizer",
-	"version": "0.1.0",
-	"description": "Obsidian plugin that reorders [[wikilink]] suggestions by configurable rules.",
+	"version": "0.2.0",
+	"description": "Reorder [[wikilink]] suggestions by folder and tag.",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {

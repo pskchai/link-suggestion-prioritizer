@@ -14,11 +14,10 @@
 
 import { App, getAllTags, TFile } from 'obsidian';
 import { around } from 'monkey-around';
-import type { Rule } from '../settings/types';
-import type { FileMeta } from '../core/matching';
-import { reorder } from '../core/prioritizer';
+import type { PluginSettings } from './settings';
+import { reorder, type FileMeta } from './reorder';
 
-type GetSettings = () => { enabled: boolean; rules: Rule[] };
+type GetSettings = () => PluginSettings;
 
 /**
  * Structurally detect the built-in link EditorSuggest.
@@ -40,7 +39,6 @@ export function toMeta(item: any, app: App): FileMeta | null {
 	return {
 		path: file.path,
 		tags: (cache ? getAllTags(cache) : null) ?? [],
-		frontmatter: (cache?.frontmatter as Record<string, any>) ?? {},
 	};
 }
 
@@ -60,9 +58,9 @@ export function installPatch(app: App, getSettings: GetSettings): () => void {
 			const result = original.call(suggest, ctx);
 			const applyReorder = (items: any) => {
 				if (!Array.isArray(items)) return items;   // null-guard
-				const settings = getSettings();
-				if (!settings.enabled || settings.rules.length === 0) return items;
-				return reorder(items, (item: any) => toMeta(item, app), settings.rules);
+				const { enabled, prioritize, deprioritize } = getSettings();
+				if (!enabled || (prioritize.length === 0 && deprioritize.length === 0)) return items;
+				return reorder(items, (item: any) => toMeta(item, app), prioritize, deprioritize);
 			};
 			if (result instanceof Promise) return result.then(applyReorder);
 			return applyReorder(result);

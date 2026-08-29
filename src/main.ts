@@ -1,7 +1,6 @@
 import { Plugin } from 'obsidian';
-import { DEFAULT_SETTINGS, PluginSettings } from './settings/types';
-import { PrioritizerSettingTab } from './settings/settings-tab';
-import { installPatch } from './suggest/patch';
+import { DEFAULT_SETTINGS, PluginSettings, PrioritizerSettingTab } from './settings';
+import { installPatch } from './patch';
 
 export default class LinkSuggestionPrioritizerPlugin extends Plugin {
 	settings!: PluginSettings;
